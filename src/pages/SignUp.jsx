@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { OAuth } from "../components/OAuth";
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -54,7 +56,7 @@ export default function SignUp() {
 
       navigate("/");
     } catch (error) {
-      console.log(error);
+      toast.error("Something went wrong with registration");
     }
   };
   return (
@@ -114,6 +116,7 @@ export default function SignUp() {
         </form>
 
         {/* {Google Oauth} */}
+        <OAuth />
 
         <Link to="/sign-in" className="registerLink">
           Sign In Instead
