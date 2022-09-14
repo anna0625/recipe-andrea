@@ -727,6 +727,7 @@ button {
 .formInputSmall,
 .formInputFile,
 .formButtonActive {
+  cursor: pointer;
   padding: 0.9rem 3rem;
   background-color: #ffffff;
   font-weight: 600;
@@ -744,6 +745,7 @@ button {
 
 .flex {
   display: flex;
+  flex-wrap: wrap;
 }
 
 .formInput,
@@ -792,7 +794,9 @@ button {
 .formInputFile {
   width: 100%;
 }
-.formInputFile::-webkit-file-upload-button {
+
+.formInputFile::-webkit-file-upload-button,
+.formInputFile::file-selector-button {
   background-color: #00cc66;
   border: none;
   color: #ffffff;

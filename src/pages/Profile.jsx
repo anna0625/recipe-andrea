@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { getAuth, updateProfile } from "firebase/auth";
 import { updateDoc, doc } from "firebase/firestore";
 import { db } from "../firebase.config";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import arrowRight from "../assets/svg/keyboardArrowRightIcon.svg";
+import cookingIcon from "../assets/svg/cooking2.svg";
 
 export default function Profile() {
   const auth = getAuth();
@@ -92,6 +94,12 @@ export default function Profile() {
             ></input>
           </form>
         </div>
+
+        <Link to="/create-listing" className="createListing">
+          <img src={cookingIcon} alt="home" />
+          <p className="">Add new item into categories!</p>
+          <img src={arrowRight} alt="arrowright" />
+        </Link>
       </main>
     </div>
   );
