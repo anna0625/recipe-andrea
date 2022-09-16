@@ -22,7 +22,7 @@ export const ListingItem = ({ listing, id }) => {
           <p className="categoryListingPrice">
             {listing.offer
               ? "📍 " + listing.restaurant
-              : "not found restaurant"}
+              : "restaurant not found"}
           </p>
           <div className="categoryListingInfoDiv">
             <img src={personIcon} alt="prep" />

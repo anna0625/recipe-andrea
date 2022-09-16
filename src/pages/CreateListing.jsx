@@ -1,11 +1,20 @@
 import React, { useState, useEffect, useRef } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { db } from "../firebase.config";
 import { useNavigate } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
 import { Spinner } from "../components/Spinner";
 import { toast } from "react-toastify";
 
 export const CreateListing = () => {
-  const [geolocationEnabled, setGeolocationEnabled] = useState(true);
+  const [geolocationEnabled, setGeolocationEnabled] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     type: "quick-and-easy",
@@ -14,11 +23,11 @@ export const CreateListing = () => {
     servings: 1,
     ingredients_str: "",
     steps_str: "",
-    imageUrls: {},
+    images: {},
     sourceURL: "",
     offer: false,
     restaurant: "",
-    location: "",
+    address: "",
     latitude: 0,
     longitude: 0,
     userRef: "",
@@ -32,18 +41,17 @@ export const CreateListing = () => {
     steps_str,
     ingredients_str,
     sourceURL,
+    images,
     offer,
     restaurant,
-    location,
-    imageUrls,
-    latitude,
-    longitude,
+    address,
   } = formData;
 
   const auth = getAuth();
   const navigate = useNavigate();
   const isMounted = useRef(true);
 
+  // fix memery leakage
   useEffect(() => {
     if (isMounted) {
       onAuthStateChanged(auth, (user) => {
@@ -59,21 +67,23 @@ export const CreateListing = () => {
     };
   }, [isMounted]);
 
+  //===================== onSubmit Start ====================
   const onSubmit = async (e) => {
     e.preventDefault();
 
-    if (imageUrls.length > 6) {
+    if (images.length > 6) {
       setLoading(false);
       toast.error("Max 6 images");
       return;
     }
 
+    // ----------------- Geolocation -----------------------
     let geolocation = {};
-    let restaurantAddress;
+    let location;
 
     if (geolocationEnabled) {
       const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${location}&key=${process.env.REACT_APP_GEOCODE_API_KEY}`
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.REACT_APP_GEOCODE_API_KEY}`
       );
 
       const data = await response.json();
@@ -81,27 +91,109 @@ export const CreateListing = () => {
       geolocation.lat = data.results[0]?.geometry.location.lat ?? 0;
       geolocation.lng = data.results[0]?.geometry.location.lng ?? 0;
 
-      restaurantAddress =
+      location =
         data.status === "ZERO_RESULTS"
           ? undefined
           : data.results[0]?.formatted_address;
 
-      if (restaurantAddress === undefined || location.includes("undefined")) {
+      if (location === undefined || address.includes("undefined")) {
         setLoading(false);
         toast.error("Please enter a correct address");
       }
-    } else {
-      geolocation.lat = latitude;
-      geolocation.lng = longitude;
-      restaurantAddress = location;
     }
+    // } else {
+    //   //   geolocation.lat = latitude;
+    //   //   geolocation.lng = longitude;
+    //   //   restaurantAddress = address;
+    // }
 
-    setLoading(false);
+    // ----------------- Firebase Storage -----------------------
+    const storeImage = async (image) => {
+      return new Promise((resolve, reject) => {
+        const storage = getStorage();
+        const fileName = `${auth.currentUser.uid}-${image.name}-${uuidv4()}`;
+
+        const storageRef = ref(storage, "images/" + fileName);
+
+        const uploadTask = uploadBytesResumable(storageRef, image);
+        // Register three observers:
+        // 1. 'state_changed' observer, called any time the state changes
+        // 2. Error observer, called on failure
+        // 3. Completion observer, called on successful completion
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            // Observe state change events such as progress, pause, and resume
+            // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+            const progress =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log("Upload is " + progress + "% done");
+            switch (snapshot.state) {
+              default:
+                console.log("This is default");
+                break;
+              case "paused":
+                console.log("Upload is paused");
+                break;
+              case "running":
+                console.log("Upload is running");
+                break;
+            }
+          },
+          (error) => {
+            // Handle unsuccessful uploads
+            reject(error);
+          },
+          () => {
+            // Handle successful uploads on complete
+            // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              resolve(downloadURL);
+            });
+          }
+        );
+      });
+    };
+
+    const imageUrls = await Promise.all(
+      [...images].map((image) => storeImage(image))
+    ).catch(() => {
+      setLoading(false);
+      toast.error("Images not uploaded");
+      return;
+    });
+
+    // ----------------- Firebase Firestore -----------------------
+    try {
+      const formDataCopy = {
+        ...formData,
+        imageUrls,
+        geolocation,
+        timestamp: serverTimestamp(),
+      };
+
+      formDataCopy.location = address;
+      delete formDataCopy.images;
+      delete formDataCopy.address;
+      // location && (formDataCopy.location = location);
+      // !formDataCopy.offer && delete formDataCopy.restaurant;
+      // !formDataCopy.offer && delete formDataCopy.address;
+
+      const docRef = await addDoc(collection(db, "listings"), formDataCopy);
+      setLoading(false);
+      toast.success("Listing saved!");
+      navigate(`/category/${formDataCopy.type}/${docRef.id}`);
+    } catch (error) {
+      console.log(error);
+    }
   };
+  //===================== onSubmit End ====================
 
+  //===================== onMutate Start ====================
   const onMutate = (e) => {
     let boolean = null;
 
+    // for some forms to display or not
     if (e.target.value === "true") {
       boolean = true;
     }
@@ -109,7 +201,15 @@ export const CreateListing = () => {
       boolean = false;
     }
 
-    //   Files
+    // ----------------- enable geolocation -----------------------
+    if (e.target.id === "offer" && e.target.value === "false") {
+      setGeolocationEnabled(false);
+    }
+    if (e.target.id === "offer" && e.target.value === "true") {
+      setGeolocationEnabled(true);
+    }
+
+    // ----------------- update FormData with images -----------------------
     if (e.target.files) {
       setFormData((prevState) => ({
         ...prevState,
@@ -124,17 +224,21 @@ export const CreateListing = () => {
       }));
     }
   };
+
   if (loading) {
     return <Spinner />;
   }
+  //===================== onMutate End ====================
 
   return (
     <div className="profile">
       <header>
         <p className="pageHeader">Create a Listing</p>
       </header>
+
       <main>
         <form onSubmit={onSubmit}>
+          {/* Categories */}
           <label className="formLabel">quick-and-easy / baking</label>
           <div className="formButtons">
             <button
@@ -158,7 +262,7 @@ export const CreateListing = () => {
               Baking
             </button>
           </div>
-
+          {/* Name of the dish */}
           <label className="formLabel">Name</label>
           <input
             className="formInputName"
@@ -166,12 +270,13 @@ export const CreateListing = () => {
             id="name"
             value={name}
             onChange={onMutate}
-            maxLength="40"
+            maxLength="100"
             minLength="3"
             required
           />
 
           <div className="formRooms flex">
+            {/* Servings */}
             <div>
               <label className="formLabel">Servings</label>
               <input
@@ -185,6 +290,7 @@ export const CreateListing = () => {
                 required
               />
             </div>
+            {/* Time */}
             <div>
               <label className="formLabel">Time (mins)</label>
               <input
@@ -194,12 +300,13 @@ export const CreateListing = () => {
                 value={time}
                 onChange={onMutate}
                 min="1"
-                max="50"
+                max="1000"
                 required
               />
             </div>
           </div>
 
+          {/* Ingredients */}
           <label className="formLabel">Ingredients</label>
           <textarea
             className="formInputAddress"
@@ -210,6 +317,7 @@ export const CreateListing = () => {
             required
           />
 
+          {/* Steps */}
           <label className="formLabel">Steps</label>
           <textarea
             className="formInputAddress"
@@ -220,6 +328,7 @@ export const CreateListing = () => {
             required
           />
 
+          {/* Source from the website */}
           <label className="formLabel">Source</label>
           <textarea
             className="formInputAddress"
@@ -230,7 +339,8 @@ export const CreateListing = () => {
             required
           />
 
-          {!geolocationEnabled && (
+          {/* Manual geolocation */}
+          {/* {!geolocationEnabled && (
             <div className="formLatLng flex">
               <div>
                 <label className="formLabel">Latitude</label>
@@ -255,8 +365,9 @@ export const CreateListing = () => {
                 />
               </div>
             </div>
-          )}
+          )} */}
 
+          {/* Related to offer, which means the user found the restaurant that sells the dish */}
           <label className="formLabel">Restaurant Found</label>
           <div className="formButtons">
             <button
@@ -281,6 +392,7 @@ export const CreateListing = () => {
             </button>
           </div>
 
+          {/* Restaurant Name & Address (location in the db) */}
           {offer && (
             <>
               <label className="formLabel">Restaurant Name</label>
@@ -295,18 +407,19 @@ export const CreateListing = () => {
                 required={offer}
               />
 
-              <label className="formLabel">Location</label>
+              <label className="formLabel">Address</label>
               <textarea
                 className="formInputAddress"
                 type="text"
-                id="location"
-                value={location}
+                id="address"
+                value={address}
                 onChange={onMutate}
                 required={offer}
               />
             </>
           )}
 
+          {/* Images (haven't set the rule in db */}
           <label className="formLabel">Images</label>
           <p className="imagesInfo">
             The first image will be the cover (max 6).
@@ -314,7 +427,7 @@ export const CreateListing = () => {
           <input
             className="formInputFile"
             type="file"
-            id="imageUrls"
+            id="images"
             onChange={onMutate}
             max="6"
             accept=".jpg,.png,.jpeg,.heic"
