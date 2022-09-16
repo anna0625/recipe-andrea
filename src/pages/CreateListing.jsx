@@ -175,7 +175,6 @@ export const CreateListing = () => {
       formDataCopy.location = address;
       delete formDataCopy.images;
       delete formDataCopy.address;
-      // location && (formDataCopy.location = location);
       // !formDataCopy.offer && delete formDataCopy.restaurant;
       // !formDataCopy.offer && delete formDataCopy.address;
 

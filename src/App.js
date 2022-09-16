@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import Explore from "./pages/Explore";
 import { Category } from "./pages/Category";
+import { Listing } from "./pages/Listing";
 import Offers from "./pages/Offers";
 import Profile from "./pages/Profile";
 import SignIn from "./pages/SignIn";
@@ -28,6 +29,10 @@ function App() {
           <Route path="/sign-up" element={<SignUp />}></Route>
           <Route path="/forgot-password" element={<ForgotPassword />}></Route>
           <Route path="/create-listing" element={<CreateListing />}></Route>
+          <Route
+            path="/category/:categoryName/:listingId"
+            element={<Listing />}
+          ></Route>
         </Routes>
         <Navbar />
       </Router>
