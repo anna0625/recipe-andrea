@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import bakingCategoryImage from "../assets/jpg/baking.jpg";
 import cookingCategoryImage from "../assets/jpg/cooking.jpg";
+import { Slider } from "../components/Slider";
 
 export default function Explore() {
   return (
@@ -11,7 +12,7 @@ export default function Explore() {
       </header>
 
       <main>
-        {/* Slider */}
+        <Slider />
 
         <p className="exploreCategoryHeading">Categories</p>
         <div className="exploreCategories">
