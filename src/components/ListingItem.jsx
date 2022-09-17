@@ -1,13 +1,14 @@
-// The listing of he specific category items that inside the category page.
+// The listing of the specific category items that inside the category page.
 // Thus, we revice props from pages/Category.jsx
 
 import React from "react";
 import { Link } from "react-router-dom";
 import { ReactComponent as DeleteIcon } from "../assets/svg/deleteIcon.svg";
+import { ReactComponent as EditIcon } from "../assets/svg/editIcon.svg";
 import personIcon from "../assets/svg/person2.svg";
 import timerIcon from "../assets/svg/timer.svg";
 
-export const ListingItem = ({ listing, id }) => {
+export const ListingItem = ({ listing, id, onEdit, onDelete }) => {
   return (
     <li className="categoryListing">
       <Link
@@ -40,13 +41,21 @@ export const ListingItem = ({ listing, id }) => {
         </div>
       </Link>
 
-      {/* {onDelete && (
+      {onDelete && (
         <DeleteIcon
           className="removeIcon"
-          fill="rgb(231, 76, 60)"
+          fill="rgb(231, 109, 60)"
           onClick={() => onDelete(listing.id, listing.name)}
         />
-      )} */}
+      )}
+
+      {onEdit && (
+        <EditIcon
+          className="editIcon"
+          fill="rgb(60, 231, 183)"
+          onClick={() => onEdit(id)}
+        />
+      )}
     </li>
   );
 };

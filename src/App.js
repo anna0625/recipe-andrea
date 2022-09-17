@@ -10,6 +10,7 @@ import SignUp from "./pages/SignUp";
 import ForgotPassword from "./pages/ForgotPassword";
 import Navbar from "./components/Navbar";
 import { CreateListing } from "./pages/CreateListing";
+import { EditListing } from "./pages/EditListing";
 import { Contact } from "./pages/Contact";
 import { PrivateRoute } from "./components/PrivateRoute";
 
@@ -30,6 +31,10 @@ function App() {
           <Route path="/sign-up" element={<SignUp />}></Route>
           <Route path="/forgot-password" element={<ForgotPassword />}></Route>
           <Route path="/create-listing" element={<CreateListing />}></Route>
+          <Route
+            path="/edit-listing/:listingId"
+            element={<EditListing />}
+          ></Route>
           <Route
             path="/category/:categoryName/:listingId"
             element={<Listing />}

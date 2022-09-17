@@ -47,6 +47,10 @@ export const Slider = () => {
     return <Spinner />;
   }
 
+  if (listings.length === 0) {
+    return <></>;
+  }
+
   return (
     listings && (
       <>
@@ -70,7 +74,7 @@ export const Slider = () => {
                 className="swiperSlideDiv"
               ></div>
               <p className="swiperSlideText">{data.name}</p>
-              <p className="swiperSlidePrice">${data.time} mins</p>
+              <p className="swiperSlidePrice">{data.time} mins</p>
             </SwiperSlide>
           ))}
         </Swiper>

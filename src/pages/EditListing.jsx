@@ -6,16 +6,17 @@ import {
   uploadBytesResumable,
   getDownloadURL,
 } from "firebase/storage";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { doc, updateDoc, getDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase.config";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { Spinner } from "../components/Spinner";
 import { toast } from "react-toastify";
 
-export const CreateListing = () => {
+export const EditListing = () => {
   const [geolocationEnabled, setGeolocationEnabled] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [listing, setListing] = useState(false);
   const [formData, setFormData] = useState({
     type: "quick-and-easy",
     name: "",
@@ -49,9 +50,11 @@ export const CreateListing = () => {
 
   const auth = getAuth();
   const navigate = useNavigate();
+  const params = useParams();
+  // useRef is to fix memory leakage
   const isMounted = useRef(true);
 
-  // fix memery leakage
+  // sets userRef to logged in user
   useEffect(() => {
     if (isMounted) {
       onAuthStateChanged(auth, (user) => {
@@ -67,6 +70,34 @@ export const CreateListing = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMounted]);
+
+  // redirect if listing is not user's
+  useEffect(() => {
+    if (listing && listing.userRef !== auth.currentUser.uid) {
+      toast.error("You cannot edit this recipe.");
+      navigate("/");
+    }
+  });
+
+  // fetchs listing to edit
+  useEffect(() => {
+    setLoading(true);
+    const fetchListing = async () => {
+      const docRef = doc(db, "listings", params.listingId);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        setListing(docSnap.data());
+        //  setting address set here, because address name in db is location
+        setFormData({ ...docSnap.data(), address: docSnap.data().location });
+        setLoading(false);
+      } else {
+        navigate("/");
+        toast.error("Recipe does not exist.");
+      }
+    };
+
+    fetchListing();
+  }, [params.listingId, navigate]);
 
   //===================== onSubmit Start ====================
   const onSubmit = async (e) => {
@@ -179,7 +210,9 @@ export const CreateListing = () => {
       // !formDataCopy.offer && delete formDataCopy.restaurant;
       // !formDataCopy.offer && delete formDataCopy.address;
 
-      const docRef = await addDoc(collection(db, "listings"), formDataCopy);
+      // UPDATE listing
+      const docRef = doc(db, "listings", params.listingId);
+      await updateDoc(docRef, formDataCopy);
       setLoading(false);
       toast.success("Listing saved!");
       navigate(`/category/${formDataCopy.type}/${docRef.id}`);
@@ -233,7 +266,7 @@ export const CreateListing = () => {
   return (
     <div className="profile">
       <header>
-        <p className="pageHeader">Create a Listing</p>
+        <p className="pageHeader">Edit Recipe</p>
       </header>
 
       <main>
@@ -436,7 +469,7 @@ export const CreateListing = () => {
           />
 
           <button type="submit" className="primaryButton createListingButton">
-            Create Listing
+            Edit Listing
           </button>
         </form>
       </main>
