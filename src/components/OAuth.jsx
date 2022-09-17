@@ -31,13 +31,13 @@ export const OAuth = () => {
       }
       navigate("/");
     } catch (error) {
-      toast.error("Could not authorize with Google");
+      toast.error("Could not authorize with Google. Try again please!");
     }
   };
 
   return (
     <div className="socialLogin">
-      <p>Sign {location.pathname === "/sign=up" ? "up" : "in"} with</p>
+      <p>Sign {location.pathname === "/sign-up" ? "up" : "in"} with</p>
       <button className="socialIconDiv" onClick={onGoogleClick}>
         <img className="socialIconImg" src={googleIcon} alt="google icon" />
       </button>

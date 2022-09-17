@@ -1,3 +1,6 @@
+// The listing of he specific category items that inside the category page.
+// Thus, we revice props from pages/Category.jsx
+
 import React from "react";
 import { Link } from "react-router-dom";
 import { ReactComponent as DeleteIcon } from "../assets/svg/deleteIcon.svg";

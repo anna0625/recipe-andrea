@@ -10,6 +10,7 @@ import SignUp from "./pages/SignUp";
 import ForgotPassword from "./pages/ForgotPassword";
 import Navbar from "./components/Navbar";
 import { CreateListing } from "./pages/CreateListing";
+import { Contact } from "./pages/Contact";
 import { PrivateRoute } from "./components/PrivateRoute";
 
 import "react-toastify/dist/ReactToastify.css";
@@ -33,6 +34,7 @@ function App() {
             path="/category/:categoryName/:listingId"
             element={<Listing />}
           ></Route>
+          <Route path="/contact/:creatorId" element={<Contact />} />
         </Routes>
         <Navbar />
       </Router>
