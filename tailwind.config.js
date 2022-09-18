@@ -10,6 +10,9 @@ module.exports = {
         "theme-4": "#84a59d",
         "theme-5": "#f28482",
       },
+      fontFamily: {
+        sans: ["Quicksand", "sans-serif"],
+      },
     },
   },
   plugins: [],

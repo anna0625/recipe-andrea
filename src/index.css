@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600;700;800;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@200;300;400;500;600;700;800;900&display=swap");
 * {
   box-sizing: border-box;
 }
@@ -11,17 +11,13 @@ html::-webkit-scrollbar {
   display: none;
 }
 
-body {
-  font-family: "Montserrat", sans-serif;
-  background-color: #f2f4f8;
-  margin: 0;
-  box-sizing: border-box;
-}
-
-a {
-  text-decoration: none;
-  display: block;
-  color: #000000;
+@layer base {
+  body {
+    @apply font-sans bg-theme-2 m-0;
+  }
+  a {
+    @apply decoration-0 block text-theme-5;
+  }
 }
 
 button {
