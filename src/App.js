@@ -8,10 +8,10 @@ import Profile from "./pages/Profile";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import ForgotPassword from "./pages/ForgotPassword";
-import Navbar from "./components/Navbar";
 import { CreateListing } from "./pages/CreateListing";
 import { EditListing } from "./pages/EditListing";
 import { Contact } from "./pages/Contact";
+import Navbar from "./components/Navbar";
 import { PrivateRoute } from "./components/PrivateRoute";
 
 import "react-toastify/dist/ReactToastify.css";

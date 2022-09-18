@@ -3,15 +3,18 @@ import { Link } from "react-router-dom";
 import bakingCategoryImage from "../assets/jpg/baking.jpg";
 import cookingCategoryImage from "../assets/jpg/cooking.jpg";
 import { Slider } from "../components/Slider";
+import { SearchBar } from "../components/SearchBar";
 
 export default function Explore() {
   return (
     <div className="explore">
-      <header>
+      <header className="content-center">
         <p className="pageHeader">Explore</p>
       </header>
 
       <main>
+        <SearchBar />
+
         <Slider />
 
         <p className="exploreCategoryHeading">Categories</p>

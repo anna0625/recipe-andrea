@@ -1,8 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { ReactComponent as OfferIcon } from "../assets/svg/localOfferIcon.svg";
-import { ReactComponent as ExploreIcon } from "../assets/svg/exploreIcon.svg";
-import { ReactComponent as PersonOutlineIcon } from "../assets/svg/personOutlineIcon.svg";
-
+import { FaSearch, FaCookie, FaRegUser } from "react-icons/fa";
 import React from "react";
 
 export default function Navbar() {
@@ -20,7 +17,7 @@ export default function Navbar() {
       <nav className="navbarNav">
         <ul className="navbarListItems">
           <li className="navbarListItem" onClick={() => navigate("/")}>
-            <ExploreIcon
+            <FaSearch
               fill={pathMatchRoute("/") ? "#f5cac3" : "#f7ede2"}
               width="20px"
               height="20px"
@@ -36,7 +33,7 @@ export default function Navbar() {
             </p>
           </li>
           <li className="navbarListItem" onClick={() => navigate("/offers")}>
-            <OfferIcon
+            <FaCookie
               fill={pathMatchRoute("/offers") ? "#f5cac3" : "#f7ede2"}
               width="20px"
               height="20px"
@@ -52,7 +49,7 @@ export default function Navbar() {
             </p>
           </li>
           <li className="navbarListItem" onClick={() => navigate("/profile")}>
-            <PersonOutlineIcon
+            <FaRegUser
               fill={pathMatchRoute("/profile") ? "#f5cac3" : "#f7ede2"}
               width="20px"
               height="20px"
