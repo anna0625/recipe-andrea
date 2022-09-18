@@ -21,9 +21,9 @@ export default function Navbar() {
         <ul className="navbarListItems">
           <li className="navbarListItem" onClick={() => navigate("/")}>
             <ExploreIcon
-              fill={pathMatchRoute("/") ? "#2c2c2c" : "#8f8f8f"}
-              width="36px"
-              height="36px"
+              fill={pathMatchRoute("/") ? "#f5cac3" : "#f7ede2"}
+              width="20px"
+              height="20px"
             />
             <p
               className={
@@ -37,9 +37,9 @@ export default function Navbar() {
           </li>
           <li className="navbarListItem" onClick={() => navigate("/offers")}>
             <OfferIcon
-              fill={pathMatchRoute("/offers") ? "#2c2c2c" : "#8f8f8f"}
-              width="36px"
-              height="36px"
+              fill={pathMatchRoute("/offers") ? "#f5cac3" : "#f7ede2"}
+              width="20px"
+              height="20px"
             />
             <p
               className={
@@ -53,9 +53,9 @@ export default function Navbar() {
           </li>
           <li className="navbarListItem" onClick={() => navigate("/profile")}>
             <PersonOutlineIcon
-              fill={pathMatchRoute("/profile") ? "#2c2c2c" : "#8f8f8f"}
-              width="36px"
-              height="36px"
+              fill={pathMatchRoute("/profile") ? "#f5cac3" : "#f7ede2"}
+              width="20px"
+              height="20px"
             />
             <p
               className={

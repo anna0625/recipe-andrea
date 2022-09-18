@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600;700;800;900&display=swap");
 * {
   box-sizing: border-box;
@@ -140,48 +144,27 @@ button {
 }
 
 .navbar {
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  height: 85px;
-  background-color: #ffffff;
-  z-index: 1000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  @apply mx-auto max-w-2xl lg:max-w-5xl bottom-3 right-0 left-0 fixed flex justify-center items-center w-fit px-5 bg-theme-4 rounded-full;
 }
 
 .navbarNav {
-  width: 100%;
-  margin-top: 0.75rem;
-  overflow-y: hidden;
+  @apply my-2 overflow-y-hidden w-full;
 }
 
 .navbarListItems {
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
+  @apply m-0 p-0 flex justify-evenly items-center space-x-5;
 }
 
 .navbarListItem {
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  @apply cursor-pointer flex flex-col justify-center items-center;
 }
 
 .navbarListItemName,
 .navbarListItemNameActive {
-  margin-top: 0.25rem;
-  font-size: 14px;
-  font-weight: 600;
-  color: #8f8f8f;
+  @apply mt-1 text-sm font-medium text-theme-2;
 }
 .navbarListItemNameActive {
-  color: #2c2c2c;
+  @apply text-theme-3;
 }
 
 .nameInput {
