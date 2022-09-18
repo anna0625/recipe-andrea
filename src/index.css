@@ -134,11 +134,6 @@ button {
   }
 }
 
-/* .pageHeader {
-  font-size: 2rem;
-  font-weight: 800;
-} */
-
 .pageHeader {
   @apply text-3xl font-semibold text-theme-4 text-center;
 }
@@ -292,7 +287,7 @@ button {
 
 .exploreHeading,
 .exploreCategoryHeading {
-  font-weight: 700;
+  @apply font-bold text-theme-4;
 }
 
 .exploreCategoryHeading {
@@ -309,9 +304,7 @@ button {
 }
 
 .swiperSlideDiv {
-  position: relative;
-  width: 100%;
-  height: 100%;
+  @apply relative w-full h-full rounded-lg;
 }
 
 .swiperSlideImg {
@@ -320,15 +313,7 @@ button {
 }
 
 .swiperSlideText {
-  color: #ffffff;
-  position: absolute;
-  top: 70px;
-  left: 0;
-  font-weight: 600;
-  max-width: 90%;
-  font-size: 1.25rem;
-  background-color: rgba(0, 0, 0, 0.8);
-  padding: 0.5rem;
+  @apply text-theme-4 absolute top-2 right-0 font-medium max-w-full text-2xl bg-theme-2 p-1 rounded-l-md;
 }
 @media (min-width: 1024px) {
   .swiperSlideText {
@@ -336,19 +321,11 @@ button {
   }
 }
 
-.swiperSlidePrice {
-  color: #000000;
-  position: absolute;
-  top: 143px;
-  left: 11px;
-  font-weight: 600;
-  max-width: 90%;
-  background-color: #ffffff;
-  padding: 0.25rem 0.5rem;
-  border-radius: 1rem;
+.swiperSlideTime {
+  @apply text-theme-2 absolute bottom-2 left-0 font-normal max-w-7xl bg-theme-4 py-1 px-2 rounded-r-md text-sm;
 }
 @media (min-width: 1024px) {
-  .swiperSlidePrice {
+  .swiperSlideTime {
     font-size: 1.25rem;
   }
 }
@@ -365,7 +342,7 @@ button {
   min-height: 115px;
   height: 15vw;
   width: 100%;
-  border-radius: 1.5rem;
+  border-radius: 0.5rem;
   object-fit: cover;
   margin: 0 auto;
 }
