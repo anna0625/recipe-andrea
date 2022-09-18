@@ -8,7 +8,7 @@ import { SearchBar } from "../components/SearchBar";
 export default function Explore() {
   return (
     <div className="explore">
-      <header className="content-center">
+      <header>
         <p className="pageHeader">Explore</p>
       </header>
 
