@@ -12,4 +12,6 @@ Why is it called "Andrea"? Because I was trying to build an recipe website for m
 
 ## Current wireframe of the new design (Figma)
 
+Inspired by Spotify with the concept of playlists.
+
 ![wireframe](image/../images/recipe-wireframe.jpg)
