@@ -74,7 +74,7 @@ export const Slider = () => {
                 className="swiperSlideDiv"
               ></div>
               <p className="swiperSlideText">{data.name}</p>
-              <p className="swiperSlidePrice">{data.time} mins</p>
+              <p className="swiperSlideTime">{data.time} mins</p>
             </SwiperSlide>
           ))}
         </Swiper>
